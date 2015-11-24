@@ -14,6 +14,7 @@ from code.makedbs import get_db
 Functions to turn data in database into actionable features
 """
 
+
 def bin_interpolate(datax, datay, dataz, interpx, interpy, smooth=0):
     """
     Bin location-specific data via interpolation
@@ -105,7 +106,7 @@ def fdist_by_node(n1, n2, df):
     f2 = df.ix[n2]
     return fdist(f1, f2)
 
-    
+
 def angle(testnode, neib1, neib2):
     """
     Calculate the angle between the 2 edges connecting 3 nodes
@@ -121,11 +122,11 @@ def angle(testnode, neib1, neib2):
     v1 = testnode[['lat', 'lon']] - neib1[['lat', 'lon']]
     v2 = testnode[['lat', 'lon']] - neib2[['lat', 'lon']]
     num = v1.dot(v2)
-    denom = np.linalg.norm(v1) * np.linalg.norm(v2))
+    denom = np.linalg.norm(v1) * np.linalg.norm(v2)
     return np.arccos(num / denom) * 180 / np.pi
 
 
-def find_closest(testnode, df, nneibs = 4, anglelim = 45):
+def find_closest(testnode, df, nneibs=4, anglelim=45):
     """
     Identify the closest neighbors to a node restricted by number and angle
     between adjacent nodes
@@ -141,17 +142,19 @@ def find_closest(testnode, df, nneibs = 4, anglelim = 45):
         list of closest nodes by node number, list of ints
     """
     # only allow nodes within certain lat/lon range
-    neibs = window(df, testnode.lat - 0.005,
-                          testnode.lat + 0.005,
-                          testnode.lon - 0.003,
-                          testnode.lon + 0.003)
+    neibs = window(df,
+                   testnode.lat - 0.005,
+                   testnode.lat + 0.005,
+                   testnode.lon - 0.003,
+                   testnode.lon + 0.003)
 
     neibs = neibs[['lat', 'lon']]
     # remove the testnode from the list of neighbors
     neibs.drop(testnode.name, axis=0, inplace=True)
 
     # no neighbors within range
-    if neibs.shape[0] == 0: return []
+    if neibs.shape[0] == 0:
+        return []
 
     # calculate distance from testnode to all surrounding nodes and sort
     neibs['dist'] = neibs.apply(lambda x: dist(x.lat, x.lon,
@@ -171,7 +174,6 @@ def find_closest(testnode, df, nneibs = 4, anglelim = 45):
         if np.all(np.array(angs) > anglelim):
             closeix.append(idx)
     return closeix
-
 
 
 class featurizer():
@@ -204,12 +206,12 @@ class featurizer():
         self.edges = None
 
         # list of features available, feature names
-        self.allfeatures = ['taxable_value', 'grocery', 'restaurant', 
+        self.allfeatures = ['taxable_value', 'grocery', 'restaurant',
                             'retail', 'ncrimes', 'sgnf',
                             'avg_hh_size', 'population', 'walkscore']
 
         # list of all sql tables used
-        self.alltables = ['assessment', 'business', 'sfpd', 
+        self.alltables = ['assessment', 'business', 'sfpd',
                           'usc_age_gender', 'usc_household',
                           'usc_pop', 'walkscore']
 
@@ -235,7 +237,6 @@ class featurizer():
                           'population': 1,
                           'walkscore': 0}
 
-
     def window(self, df):
         """
         Window down a dataframe of latitude and longitude columns
@@ -254,7 +255,6 @@ class featurizer():
         df = df.reset_index()
         return df
 
-
     def binlatlon(self, df):
         """
         Bin dataframe lat/long locations according to object's .latbins
@@ -266,11 +266,10 @@ class featurizer():
             binned dataframe
         """
         df['lat_cut'] = pd.cut(df.lat, self.latbins,
-                               labels = self.latbins[1:])
+                               labels=self.latbins[1:])
         df['lon_cut'] = pd.cut(df.lon, self.lonbins,
-                               labels = self.lonbins[1:])
+                               labels=self.lonbins[1:])
         return df
-
 
     def set_limits(self, latmin, latmax, lonmin, lonmax):
         """
@@ -287,7 +286,6 @@ class featurizer():
         self.lonmin = lonmin
         self.lonmax = lonmax
 
-
     def set_bin_resolution(self, npoints):
         """
         Set object's lat/lon bin size within the object's lat/lon limits
@@ -300,7 +298,6 @@ class featurizer():
         self.latbins = np.linspace(latmin, latmax, npoints)
         self.lonbins = np.linspace(lonmin, lonmax, npoints)
 
-
     def plot(self, featurelist):
         """
         Plots selected features
@@ -312,11 +309,11 @@ class featurizer():
             None
         """
         nplots = len(featurelist)
-        plt.figure(figsize = (16, 16*nplots))
+        plt.figure(figsize=(16, 16*nplots))
         for i in xrange(1, nplots + 1):
-            plt.subplot(nplots,1,i)
+            plt.subplot(nplots, 1, i)
             plt.scatter(self.fsmooth.lon, self.fsmooth.lat,
-                    c=self.fsmooth[featurelist[i-1]], linewidths = 0)
+                        c=self.fsmooth[featurelist[i-1]], linewidths=0)
             plt.colorbar()
             plt.axis('equal')
             plt.margins(0)
@@ -326,7 +323,6 @@ class featurizer():
             plt.title(featurelist[i-1])
             plt.xlabel('Longitude')
             plt.ylabel('Latitude')
-
 
     def add_features(self, flist, verbose=False):
         """
@@ -341,15 +337,17 @@ class featurizer():
         """
 
         for f in flist:
-            if verbose: print 'loading ', f; sys.stdout.flush()
+            if verbose:
+                print 'loading ', f
+                sys.stdout.flush()
 
             # load database table
             df1 = get_db(f)
-            
+
             # merge in lat/lon for census data from shapefile
             if f in ['usc_age_gender', 'usc_household', 'usc_pop']:
-                df1 = df1.merge(self.shapefile, left_on = 'id2',
-                                right_on = 'geoid')
+                df1 = df1.merge(self.shapefile, left_on='id2',
+                                right_on='geoid')
             df1 = self.window(df1)
 
             # handling each table type
@@ -366,10 +364,10 @@ class featurizer():
                 df1['count'] = 1
                 df1 = df1.groupby(['lat_cut', 'lon_cut', 'category']).count()
                 df1 = df1.reset_index().dropna()
-                df2 = df1.pivot(columns = 'category',
-                                values = 'count').fillna(0)
+                df2 = df1.pivot(columns='category',
+                                values='count').fillna(0)
                 df1 = df1.merge(df2, left_index=True, right_index=True)
-                df1.drop('category', axis = 1, inplace = True)
+                df1.drop('category', axis=1, inplace=True)
                 df1 = df1.groupby(['lat_cut', 'lon_cut']).sum().reset_index()
                 df1 = df1[['lat_cut', 'lon_cut', 'grocery',
                            'restaurant', 'retail']]
@@ -392,13 +390,13 @@ class featurizer():
 
                 # calc average household size
                 total_p = 0
-                p_range = range(1,8)
+                p_range = range(1, 8)
                 for i in p_range:
                     col = 'p' + str(i)
                     total_p += df1[col] * i
                 av_p = total_p / df1.total
                 df1['avg_hh_size'] = av_p
-                df1.fillna(0, inplace = True)
+                df1.fillna(0, inplace=True)
 
                 df1 = df1[['lat', 'lon', 'avg_hh_size']]
 
@@ -412,15 +410,15 @@ class featurizer():
             # append results to final data frame
             for col in df1.columns[2:]:
                 finterp = bin_interpolate(df1.lon, df1.lat, df1[col],
-                                      self.nodelon, self.nodelat)
-                finterp = pd.Series(finterp, name = col)
+                                          self.nodelon, self.nodelat)
+                finterp = pd.Series(finterp, name=col)
 
                 if self.features.shape == (0, 0):
                     self.features = pd.concat((self.nodelat, self.nodelon,
-                                               finterp), axis = 1)
+                                               finterp), axis=1)
                 else:
                     self.features = pd.concat((self.features, finterp),
-                                              axis = 1)
+                                              axis=1)
 
     def smooth_features(self):
         """
@@ -446,15 +444,14 @@ class featurizer():
             self.fsmooth.taxable_value = np.log(self.fsmooth.taxable_value+1)
 
         for col in cols:
-            rbf = Rbf(self.features.lon, self.features.lat, 
+            rbf = Rbf(self.features.lon, self.features.lat,
                       self.fsmooth[col], function='linear',
-                      smooth = self.smoothing[col])
+                      smooth=self.smoothing[col])
             self.fsmooth[col] = rbf(self.features.lon, self.features.lat)
 
         # scale to zero mean, unit standard deviation
         ssc = StandardScaler()
-        self.fsmooth.iloc[:,2:] = ssc.fit_transform(self.fsmooth.iloc[:,2:])
-
+        self.fsmooth.iloc[:, 2:] = ssc.fit_transform(self.fsmooth.iloc[:, 2:])
 
     def make_edges(self):
         """
@@ -465,12 +462,15 @@ class featurizer():
         Returns:
             None
         """
-        edgelambda = lambda x: find_closest(x, df)
-        self.edges = self.features.apply(edgelambda, axis = 1)
+
+        def edgelambda():
+            return find_closest(x, df)
+
+        self.edges = self.features.apply(edgelambda, axis=1)
 
 
 if __name__ == '__main__':
-    
+
     f = featurizer()
 
     print 'Making features'
@@ -481,13 +481,3 @@ if __name__ == '__main__':
 
     print 'Making edges'
     f.make_edges()
-
-
-
-
-
-
-
-
-
-
