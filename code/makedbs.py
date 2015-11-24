@@ -44,9 +44,11 @@ def db_insert(df, q_string):
     for idx in df.index:
         values = df.ix[idx].values
         c.execute(q_string, values)
-        if idx % 100 == 0: conn.commit();
+        if idx % 100 == 0:
+            conn.commit()
     conn.commit()
     conn.close()
+
 
 def get_db(table_name):
     """
@@ -75,7 +77,8 @@ Functions for handling each individual dataset. Most have a function
 to load the data, clean it, and then insert it into the database.
 """
 
-### San Francisco tax assessment data
+
+# San Francisco tax assessment data
 def make_assessment():
     """
     Build 'assessment' data database
@@ -105,7 +108,7 @@ def make_assessment():
     db_insert(df, q_string)
 
     # clean data; remove unused columns, convert datatype
-    df.drop('Fixtures_Value', axis = 1, inplace = True)
+    df.drop('Fixtures_Value', axis=1, inplace=True)
     df.RE = df.RE.apply(lambda x: x.strip('$')).astype('float')
     df.RE_Improvements = df.RE_Improvements.apply(lambda x: x.strip('$'))
     df.RE_Improvements = df.RE_Improvements.astype('float')
@@ -115,7 +118,7 @@ def make_assessment():
 
     df['lat'] = df.geom.apply(lambda x: eval(x)[0])
     df['lon'] = df.geom.apply(lambda x: eval(x)[1])
-    df.drop('geom', axis = 1, inplace = True)
+    df.drop('geom', axis=1, inplace=True)
 
     # insert cleaned data into db
     q_string = '''
@@ -135,7 +138,8 @@ def make_assessment():
 
     return
 
-### San Francisco registered business data
+
+# San Francisco registered business data
 def getlatlon(v):
     """
     Helper function for clean_business. Extracts latitude, longitude
@@ -145,19 +149,22 @@ def getlatlon(v):
         v : formatted address, string of form '(<lat>, <lon>)'
 
     Returns:
-        latitude, longitude, float tuple            
+        latitude, longitude, float tuple
     """
-    
     # check for nan
-    if type(v) == float: return 0, 0
-    if v == 'NaN': return 0, 0
+    if type(v) == float:
+        return 0, 0
+    if v == 'NaN':
+        return 0, 0
     s = v.split('\n')[-1]
 
     # check for missing lat/lon
-    if len(s) == 0: return 0, 0
+    if len(s) == 0:
+        return 0, 0
 
     # convert string to tuple
     return eval(s)
+
 
 def load_business():
     """
@@ -171,6 +178,7 @@ def load_business():
     fn = 'data/business/Registered_Business_Locations_-_San_Francisco.csv'
     df = pd.read_csv(fn)
     return df
+
 
 def make_business():
     """
@@ -229,6 +237,7 @@ def make_business():
     db_insert(df, q_string)
     return
 
+
 def clean_business(df):
     """
     Cleans 'business' data
@@ -249,6 +258,9 @@ def clean_business(df):
 
     # convert numbers to readable names with from
     # Principal_Business_Code__PBC__List.csv
+
+    str09 = 'Public Warehousing/Transportation/Storage/Freight Forwarding'
+    str10 = 'Communication Services; Utilities (Gas/Electric/Steam/Railroad)'
     major_names = {'00': 'Fixed Place of Business',
                    '01': 'Commission Merchant or Broker (non-durable goods)',
                    '02': 'General Contractors & Operative Builders',
@@ -258,8 +270,8 @@ def clean_business(df):
                    '06': 'Personal Property/Equipment Rental & Leasing',
                    '07': 'Other Business Services',
                    '08': 'Retail Sales',
-                   '09': 'Public Warehousing/Transportation/Storage/Freight Forwarding',
-                   '10': 'Communication Services; Utilities (Gas/Electric/Steam/Railroad)',
+                   '09': str09,
+                   '10': str10,
                    '11': 'Transporting Persons for Hire',
                    '12': 'Trucking/Hauling',
                    '13': 'Wholesale Sales',
@@ -273,12 +285,12 @@ def clean_business(df):
     df['pbc_code'] = df['pbc_code'].astype('int')
 
     # drop rows with missing lat/lon
-    df = df[df.lat != 0] # ~5000
+    df = df[df.lat != 0]  # ~5000
 
     # add pbc code descriptions
     fn = 'data/business/Principal_Business_Code__PBC__List.csv'
     codes = pd.read_csv(fn)
-    codes.set_index('Business_Minor_Class', inplace = True)
+    codes.set_index('Business_Minor_Class', inplace=True)
     df['minor_class'] = df['pbc_code'].replace(codes.Description)
     df = df.merge(codes, how='left', left_on='pbc_code',
                   right_on='Business_Minor_Class')
@@ -316,19 +328,20 @@ def clean_business(df):
 
     # drop unused columns
     df.drop(['location_id',
-         'business_account_number',
-         'mail_address',
-         'mail_city_state_zip',
-         'business_start_date',
-         'business_end_date',
-         'location_start_date',
-         'location_end_date',
-         'business_location'],
-         axis = 1, inplace=True)
+             'business_account_number',
+             'mail_address',
+             'mail_city_state_zip',
+             'business_start_date',
+             'business_end_date',
+             'location_start_date',
+             'location_end_date',
+             'business_location'],
+            axis=1, inplace=True)
 
     return df
 
-### San Francisco Police Department crime data
+
+# San Francisco Police Department crime data
 def load_sfpd():
     """
     Load the sfpd crime dataset and return it in a dataframe
@@ -341,6 +354,7 @@ def load_sfpd():
     fn = 'data/sfpd/SFPD_Incidents_-_from_1_January_2003.csv'
     df = pd.read_csv(fn)
     return df
+
 
 def clean_sfpd(df):
     """
@@ -362,9 +376,10 @@ def clean_sfpd(df):
              'Location',
              'PdId',
              'Date',
-             'Time'], axis = 1, inplace = True)
+             'Time'], axis=1, inplace=True)
 
     return df
+
 
 def make_sfpd():
     """
@@ -410,10 +425,9 @@ def make_sfpd():
 
     db_insert(df, q_string)
 
-### US Census Data; Age/Gender, household size, population, and
+
+# US Census Data; Age/Gender, household size, population, and
 #    associated shapefiles at the 'block' level
-
-
 def splitgeo(geo):
     """
     Helper function for cleaning US Census data. Splits string
@@ -430,6 +444,7 @@ def splitgeo(geo):
     tract = s[2].split(' ')[-1]
     return block, blockgroup, tract
 
+
 def load_usc_age_gender():
     """
     Load the Census age/gender dataset and return it in a dataframe
@@ -442,12 +457,13 @@ def load_usc_age_gender():
     df = pd.read_csv('data/uscensus/p12/DEC_10_SF1_P12.csv', skiprows=1)
     return df
 
+
 def clean_usc_age_gender(df):
     """
     Cleans 'usc_age_gender' data
 
     Args:
-        df : pandas dataframe, 'usc_age_gender' data loaded via 
+        df : pandas dataframe, 'usc_age_gender' data loaded via
             load_usc_age_gender
     Returns:
         cleaned usc_age_gender pandas dataframe
@@ -461,7 +477,7 @@ def clean_usc_age_gender(df):
     # drop unused
     df.drop(['Id',
              'Geography',
-             'geovalues'], axis = 1, inplace = True)
+             'geovalues'], axis=1, inplace=True)
 
     # clean up column names
     cnames = df.columns
@@ -478,6 +494,7 @@ def clean_usc_age_gender(df):
 
     return df
 
+
 def make_usc_age_gender():
     """
     Inserts data from the usc_age_gender dataset into database
@@ -487,7 +504,6 @@ def make_usc_age_gender():
     Returns:
         None
     """
-    
     df = load_usc_age_gender()
     df = clean_usc_age_gender(df)
     q_string = '''
@@ -581,7 +597,7 @@ def clean_usc_household(df):
     # drop unused
     df.drop(['Id',
              'Geography',
-             'geovalues'], axis = 1, inplace = True)
+             'geovalues'], axis=1, inplace=True)
 
     cnames = df.columns
     cnames = cnames.str.replace('-person household', '')
@@ -592,11 +608,13 @@ def clean_usc_household(df):
     fnames = []
     for name in cnames:
         pp = ''
-        if re.match('[0-9]', name): pp = 'p'
+        if re.match('[0-9]', name):
+            pp = 'p'
         fnames.append(pp + name)
     df.columns = fnames
 
     return df
+
 
 def make_usc_household():
     """
@@ -626,6 +644,7 @@ def make_usc_household():
 
     db_insert(df, q_string)
 
+
 def load_usc_pop():
     """
     Load the US Census Population dataset and return it in a dataframe
@@ -637,6 +656,7 @@ def load_usc_pop():
     """
     df = pd.read_csv('data/uscensus/p1/DEC_10_SF1_P1.csv', skiprows=1)
     return df
+
 
 def clean_usc_pop(df):
     """
@@ -656,9 +676,10 @@ def clean_usc_pop(df):
     # drop unused
     df.drop(['Id',
              'Geography',
-             'geovalues'], axis = 1, inplace = True)
+             'geovalues'], axis=1, inplace=True)
 
     return df
+
 
 def make_usc_pop():
     """
@@ -725,9 +746,8 @@ def make_usc_shapefile():
     db_insert(df, q_string)
 
 
-### Walkscore
+# Walkscore
 # imported in scrape.py
-
 def clean_walkscore(df):
     """
     Cleans 'walkscore' data
@@ -740,7 +760,7 @@ def clean_walkscore(df):
     df['walkscore'] = df.walkscore.astype('int')
 
     # remove duplicated points
-    df.drop_duplicates(['snapped_lat', 'snapped_lon'], inplace = True)
+    df.drop_duplicates(['snapped_lat', 'snapped_lon'], inplace=True)
 
     # drop unused
     df.drop(['help_link',
@@ -748,14 +768,14 @@ def clean_walkscore(df):
              'more_info_icon',
              'more_info_link',
              'status',
-             'ws_link'], axis = 1, inplace = True)
+             'ws_link'], axis=1, inplace=True)
 
     # reorder columns
     df = df[['snapped_lat', 'snapped_lon', 'walkscore', 'description',
-              'updated', 'searched_lat', 'searched_lon']]
+             'updated', 'searched_lat', 'searched_lon']]
     # rename columns
     df.columns = ['lat', 'lon', 'walkscore', 'description',
-                    'updated', 'searched_lat', 'searched_lon']
+                  'updated', 'searched_lat', 'searched_lon']
     return df
 
 
@@ -821,4 +841,3 @@ def sf_to_df(filename):
     # drop empty columns
     rdf.drop(['ur', 'uace', 'funcstat'], axis=1, inplace=True)
     return rdf
-
