@@ -1,4 +1,3 @@
-# Ingest data from sources into standardized format and store in db
 import numpy as np
 import pandas as pd
 import re
@@ -7,18 +6,41 @@ import psycopg2
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 
-from code.shapefiles import sf_to_df
+from pyshp import shapefile
+
+"""
+Functions associated with extracting raw data, cleaning, transforming,
+and inserting into and extracting from the database.
+"""
 
 
 def db_insert(df, q_string):
-	# insert raw data into db
+	"""
+    Insert pandas dataframe into the neighborhood database using
+    accompanying query string.
+
+    Args:
+    	df : pandas dataframe formatted to match database table
+    		columns should match columns in query string and table
+    	q_string : string. sql query string for database insertion
+    		The query string takes the following form:
+
+    		'INSERT INTO <table name> (<column name1>, <column name2>, ...)
+			VALUES (%s)'
+    Returns:
+    	None
+    """
+
+    # create a '%s' for each column to be inserted
 	n_cols = df.shape[1]
 	esses = '%s, ' * (n_cols - 1) + '%s'
 	q_string = q_string % esses
 
+	# connect to hoodie database
 	conn = psycopg2.connect(dbname='hoodie', user='postgres', host='/tmp')
 	c = conn.cursor()
 
+	# insert data in dataframe one row at a time, write every 100 lines
 	for idx in df.index:
 		values = df.ix[idx].values
 		c.execute(q_string, values)
@@ -27,19 +49,45 @@ def db_insert(df, q_string):
 	conn.close()
 
 def get_db(table_name):
+	"""
+    Fetch data from database as a pandas dataframe
+
+    Args:
+    	table_name : string. sql table name to fetch from database
+
+    Returns:
+    	pandas dataframe from sql table
+    """
+
+    # parameters
 	db = {'drivername': 'postgres',
 		  'host': 'localhost',
 		  'username': 'postgres',
 		  'database': 'hoodie'}
+
 	engine = create_engine(URL(**db))
 	with engine.connect() as conn, conn.begin():
 		df = pd.read_sql_table(table_name, conn)
 	return df
 
+"""
+Functions for handling each individual dataset. Most have a function
+to load the data, clean it, and then insert it into the database.
+"""
 
-# assessment data
+### assessment data
 def make_assessment():
-	df = pd.read_csv('../data/assessment/Secured_Property_Assessment_Roll_FY13_Q4.csv')
+	"""
+    Build 'assessment' data database
+
+    Args:
+    	None
+
+    Returns:
+    	None
+    """
+    fn = 'data/assessment/Secured_Property_Assessment_Roll_FY13_Q4.csv'
+	df = pd.read_csv(fn)
 
 	q_string = '''
 		INSERT INTO assessment_raw (Situs_Address,
@@ -57,7 +105,7 @@ def make_assessment():
 	# insert raw data
 	db_insert(df, q_string)
 
-	# clean data
+	# clean data; remove unused columns, convert datatype
 	df.drop('Fixtures_Value', axis = 1, inplace = True)
 	df.RE = df.RE.apply(lambda x: x.strip('$')).astype('float')
 	df.RE_Improvements = df.RE_Improvements.apply(lambda x: x.strip('$'))
@@ -90,14 +138,17 @@ def make_assessment():
 
 ### Business data
 def getlatlon(v):
-	'''
-	INPUT: formatted address, string
-	OUTPUT: latitude, longitude, tuple
-
+	"""
 	Helper function for clean_business. Extracts latitude, longitude
-	tuple from address cell
-	'''
+	tuple from address cell.
 
+    Args:
+    	v : formatted address, string of form '(<lat>, <lon>)'
+
+    Returns:
+    	latitude, longitude, float tuple			
+	"""
+	
 	# check for nan
 	if type(v) == float: return 0, 0
 	if v == 'NaN': return 0, 0
@@ -110,11 +161,14 @@ def getlatlon(v):
 	return eval(s)
 
 def load_business():
-	'''
-	INPUT: None
-	OUTPUT: business data, DataFrame
-	Function to load the business dataset and return it in a dataframe
-	'''
+	"""
+	Load the business dataset and return it in a dataframe
+
+    Args:
+		None
+    Returns:
+    	'business' data, pandas dataframe
+	"""
 	fn = 'data/business/Registered_Business_Locations_-_San_Francisco.csv'
 	df = pd.read_csv(fn)
 	return df
@@ -579,4 +633,43 @@ def make_walkscore():
 
 	db_insert(df, q_string)
 
+
+def sf_to_df(filename):
+	'''
+	INPUT
+		filename: string
+	OUTPUT
+		shapefile records; pandas DataFrame
+
+	Converts shapefile records from US Census 2010 to dataframe.
+	'''
+	sf = shapefile.Reader(filename)
+	records = np.array(sf.records())
+	rdf = pd.DataFrame(records)
+
+	colnames = ['state',
+				'county',
+				'tract',
+				'block',
+				'geoid',
+				'name',
+				'mtfcc',
+				'ur',
+				'uace',
+				'funcstat',
+				'land_area',
+				'water_area',
+				'lat',
+				'lon']
+	rdf.columns = colnames
+
+	rdf.geoid = rdf.geoid.astype('int')
+	rdf.land_area = rdf.land_area.astype('int')
+	rdf.water_area = rdf.water_area.astype('int')
+	rdf.lat = rdf.lat.astype('float')
+	rdf.lon = rdf.lon.astype('float')
+
+	# drop empty columns
+	rdf.drop(['ur', 'uace', 'funcstat'], axis=1, inplace=True)
+	return rdf
 
