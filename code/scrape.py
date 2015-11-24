@@ -3,7 +3,6 @@ import pandas as pd
 
 import psycopg2
 import requests
-from xml.etree import ElementTree
 
 
 def scrape_walkscore(lat, lon):
@@ -60,18 +59,4 @@ def scrape_walkscore(lat, lon):
 	conn.commit()
 	conn.close()
 
-def scrape_greatschools_schools():
-	with open('/Users/crupley/.api/greatschools.txt') as f:
-	    gskey = f.readline().strip()
-
-	state = 'CA'
-	city = 'San-Francisco'
-
-	requrl = 'http://api.greatschools.org/schools/' + state + '/' + city
-	payload = {'key': gskey,
-			   'limit': '-1'}
-
-	response = requests.get(requrl, params = payload)
-
-def schoolxml_to_df(xml_string):
-	tree = ElementTree.fromstring(xml_string)
+	return
