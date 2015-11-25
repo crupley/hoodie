@@ -17,7 +17,7 @@ graphreduce.py | Collection of functions for building and analyzing a graph mode
 * numpy
 * matplotlib
 * scipy: Rbf, Delaunay
-* sklearn: StandardScaler
+* sklearn: StandardScaler, pairwise_distances
 * psycopg2
 * sqlalchemy
 * pyshp
