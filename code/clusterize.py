@@ -19,9 +19,11 @@ from shapely.ops import cascaded_union, polygonize
 from code.featurize import fdist
 from code.shapefiles import merge_shapefiles, make_shapefiles
 
-import pdb
+"""
+Final function for creating neighborhood clusters
+"""
 
-
+# convert feature numbers to feature name
 FDICT = {0: 'taxable_value',
          1: 'grocery',
          2: 'restaurant',
@@ -32,6 +34,7 @@ FDICT = {0: 'taxable_value',
          7: 'population',
          8: 'walkscore'}
 
+# convert feature name to proper feature name
 FNAMES = {'taxable_value': 'Property Value',
 		  'grocery': 'Grocery',
 		  'restaurant': 'Restaurants',
@@ -42,32 +45,49 @@ FNAMES = {'taxable_value': 'Property Value',
 		  'population': 'Population',
 		  'walkscore': 'Walkscore'}
 
+
 def mapno2list(s):
+	"""Convert from map number string of form 'f1f2f3' to list of int"""
 	return [int(s[i] + s[i+1]) for i in range(len(s)) if i%2 == 0]
 
 
 def list2mapno(featurenumlist):
+	"""Convert from list of int to mapno string"""
 	f = tuple(featurenumlist)
 	return '%02d' * len(f) % f
 
 
 def mapno2fname(s):
+	"""Convert from map number string of form 'f1f2f3' to feature name"""
 	featurenumlist = mapno2list(s)
 	return [FDICT[i] for i in featurenumlist]
 
 
 def bigsize(row):
-	'''
-	calculate biggest cluster in graph after each cut
-	'''
+	"""
+	Remove edge in graph and calculate biggest cluster in graph after.
+	To be used in .apply on pandas dataframe
+
+	Args:
+		row : row from a pandas DataFrame (pandas Series) with
+			'source' and 'target' node features
+	Returns:
+		number of nodes in largest cluster of graph, int
+	"""
 	g.remove_edge(row.source, row.target)
 	return len(max(nx.connected_components(g), key=len))
 
 
 def cutcon(row, graph):
-	'''
-	return number of connected components after each cut
-	'''
+	"""
+	Remove edge in graph and calculate biggest cluster in graph after.
+	To be used in .apply on pandas dataframe
+
+	Args:
+		row : row from a pandas DataFrame (pandas Series)
+	Returns:
+		number of nodes in largest cluster of graph, int
+	"""
 	graph.remove_edge(row.source, row.target)
 	return nx.number_connected_components(graph)
 
@@ -247,7 +267,7 @@ def rg_colormatrix(sim):
 def list_(*args): return list(args)
 
 
-def make_json(cnum, polys, clist, rgmatrix, mapno, fbars):
+def make_json(cnum, polys, rgmatrix, mapno, fbars):
 	
 	# column names
 	fnamesc = map(lambda x: [FDICT[n] for n in mapno2list(x)], mapno)
@@ -260,7 +280,7 @@ def make_json(cnum, polys, clist, rgmatrix, mapno, fbars):
 	for i in xrange(len(cnum)):
 	    featurelist.append({"type": "Feature",
 	                        "properties": {
-	                        "color": clist.iloc[i],
+	                        # "color": clist.iloc[i],
 	                        "rgmat": rgmatrix.iloc[i],
 	                        "mapno": mapno.iloc[i],
 	                        "neibno": cnum.iloc[i],
@@ -304,7 +324,7 @@ def merge_map_data(path, featuredf, store=False):
 	cnum = cnum.ix[nodelist]
 	nclusters = len(cnum.unique())
 
-	clist = gencolors(nclusters)
+	# clist = gencolors(nclusters)
 	rgmatrix = rg_colormatrix(most_similar(featuredf, cnum))
 	fbars = feature_bars(featuredf[FDICT.values()], cnum)
 
@@ -316,7 +336,7 @@ def merge_map_data(path, featuredf, store=False):
 
 	alldf = pd.DataFrame({'cnum': cnum.unique(),
                       'polygon': polys})
-	alldf['color'] = clist
+	# alldf['color'] = clist
 	alldf['rgmatrix'] = map(lambda x: list(rgmatrix.ix[x]), cnum.unique())
 	alldf['mapno'] = ''
 	alldf['fbars'] = map(list, fbars.round(2).values)
@@ -340,7 +360,7 @@ def merge_map_data(path, featuredf, store=False):
 		onedf = pd.DataFrame({'cnum': cnum.unique(),
                       'polygon': polys})
 
-		onedf['color'] = clist
+		# onedf['color'] = clist
 		onedf['rgmatrix'] = map(lambda x: list(rgmatrix.ix[x]), cnum.unique())
 		onedf['mapno'] = f
 		onedf['fbars'] = map(list, fbars.round(2).values)
