@@ -939,3 +939,8 @@ def sf_to_df(filename):
     # drop empty columns
     rdf.drop(['ur', 'uace', 'funcstat'], axis=1, inplace=True)
     return rdf
+
+if __name__ == "__main__":
+
+    print 'Importing data to database...'
+    make_all_db()
