@@ -20,7 +20,7 @@ from code.featurize import fdist
 from code.shapefiles import merge_shapefiles, make_shapefiles
 
 """
-Final function for creating neighborhood clusters
+Final function set for creating neighborhood clusters
 """
 
 # convert feature numbers to feature name
