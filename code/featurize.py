@@ -463,7 +463,7 @@ class featurizer():
             None
         """
 
-        def edgelambda():
+        def edgelambda(x):
             return find_closest(x, df)
 
         self.edges = self.features.apply(edgelambda, axis=1)
