@@ -4,12 +4,11 @@
 
 Folder | File | Description | Contents | Scale
 :--|:--|:--|:--|:--
-[assessment](https://data.sfgov.org/City-Management-and-Ethics/Secured-Property-Assessment-Roll-FY13-Q4/e6sm-rank) | Secured\_Property\_Assessment\_Roll\_FY13\_Q4.csv | Assessed property values | Address, taxable value, lat/lon | 204,541 samples, 26.7 MB
-[business](https://data.sfgov.org/Economy-and-Community/Registered-Business-Locations-San-Francisco/g8m3-pdis) | <ul><li>Registered\_Business\_Locations\_-\_San\_Francisco.csv</li><li>[Principal\_Business_Code\_\_PBC\_\_List.csv](https://data.sfgov.org/Economy-and-Community/Principal-Business-Code-PBC-List/5cvm-h7xc)</li></ul> | Registered businesses | Address, 'class code', lat/lon | 156,111 samples, 38.2 MB
-[sfpd](https://data.sfgov.org/Public-Safety/SFPD-Incidents-from-1-January-2003/tmnf-yvry) | SFPD\_Incidents\_-\_from\_1\_January\_2003.csv | SFPD incident reports from Jan 2003 - Oct 2015 | Date, time, Category, District, lat/lon | 1,830,772 incidents, 375.5 MB
-[uscensus](http://factfinder.census.gov/) | <ul><li>ACS\_13\_5YR\_B19001.zip</li> <li>DEC\_10\_SF1\_P12.zip</li> <li>DEC\_10\_SF1\_H13.zip</li> <li>DEC\_10\_SF1\_P1.zip</li><li>[BlockAssign\_ST06\_CA.zip](http://www.census.gov/geo/maps-data/data/baf.html)</li></ul> | <ul><li>Income, block group</li><li>Age/gender by block</li><li>Household size by block</li><li>Population by block</li></ul> | <ul><li>Income count, 16 buckets</li><li>Age/gender, 23 bins per gender</li><li>Household count, 1-7+ bin</li><li>Population count</li></ul> | block group: 582 samples; block: 7387 samples
-[tiger](http://www.census.gov/geo/maps-data/data/tiger.html) | tlgdb\_2015\_a\_06\_ca.gdb.zip | Address to lat/lon lookup database, CA | | 219 MB (zipped)
-[gpw](http://sedac.ciesin.columbia.edu/data/set/gpw-v3-population-density) | usa\_gpwv3\_pcount\_ascii\_25.zip | Gridded population of the world | Count on grid in 2.5 arc-minute buckets (0.042 deg) | Earth, 165 MB
+[assessment](https://data.sfgov.org/City-Management-and-Ethics/Secured-Property-Assessment-Roll-FY13-Q4/e6sm-rank) | data/assessment/Secured\_Property\_Assessment\_Roll\_FY13\_Q4.csv | Assessed property values | Address, taxable value, lat/lon | 204,541 samples, 26.7 MB
+[business](https://data.sfgov.org/Economy-and-Community/Registered-Business-Locations-San-Francisco/g8m3-pdis) | <ul><li>data/business/Registered\_Business\_Locations\_-\_San\_Francisco.csv</li><li>[data/business/Principal\_Business_Code\_\_PBC\_\_List.csv](https://data.sfgov.org/Economy-and-Community/Principal-Business-Code-PBC-List/5cvm-h7xc)</li></ul> | Registered businesses | Address, 'class code', lat/lon | 156,111 samples, 38.2 MB
+[sfpd](https://data.sfgov.org/Public-Safety/SFPD-Incidents-from-1-January-2003/tmnf-yvry) | data/sfpd/SFPD\_Incidents\_-\_from\_1\_January\_2003.csv | SFPD incident reports from Jan 2003 - Oct 2015 | Date, time, Category, District, lat/lon | 1,830,772 incidents, 375.5 MB
+[uscensus](http://factfinder.census.gov/) | <ul><li>[data/uscensus/p12/DEC\_10\_SF1\_P12.csv](http://factfinder.census.gov/bkmk/table/1.0/en/DEC/10_SF1/P12/0500000US06075.10000)</li> <li>[data/uscensus/h13/DEC\_10\_SF1\_H13.csv](http://factfinder.census.gov/bkmk/table/1.0/en/DEC/10_SF1/H13/0500000US06075.10000)</li> <li>[data/uscensus/p1/DEC\_10\_SF1\_P1.csv](http://factfinder.census.gov/bkmk/table/1.0/en/DEC/10_SF1/P1/0500000US06075.10000)</li><li>[data/uscensus/tl\_2010\_06075\_tabblock10/tl\_2010\_06075\_tabblock10.dbf](ftp://ftp2.census.gov/geo/pvs/tiger2010st/06_California/06075/tl10)</li></ul> | <ul><li>Age/gender by block</li><li>Household size by block</li><li>Population by block</li><li>Census shapefiles, block</li></ul> | <ul><li>Income count, 16 buckets</li><li>Age/gender, 23 bins per gender</li><li>Household count, 1-7+ bin</li><li>Population count</li><li>Shape coordinates for all blocks</li></ul> | block: 7387 samples in San Francisco
+[walkscore](http://www.walkscore.com) | N/A (Pulled via API to database) | Walkscore | Walkscore for lat/lon points in San Francisco | 7224 samples on lat/lon grid with 500 ft. spacing
 
 ## Postgres Schema
 
@@ -271,13 +270,13 @@ hoodie=# \d usc_shapefile
 
 ## Shapefiles
 
-shapefiles from ftp://ftp2.census.gov/geo/pvs/tiger2010st/06_California/06075/
-tl10 matches number of blocks in other data files
+shapefiles from [TIGER](ftp://ftp2.census.gov/geo/pvs/tiger2010st/06_California/06075/
+tl10)
 
-TIGER guide book: http://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2010/TGRSHP10SF1.pdf
+[TIGER guide book](http://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2010/TGRSHP10SF1.pdf)
 
 ### Fields
-File Name: tl_2010_<state FIPS>_tabblock10.shp
+File Name: tl\_2010\_<state FIPS>\_tabblock10.shp
 
 Field | Length | Type | Description
 :--|:--|:--|:--
