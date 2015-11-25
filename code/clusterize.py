@@ -377,7 +377,7 @@ def merge_map_data(path, featuredf, store=False):
 
     # store results
     if store:
-        alldf.to_csv('results/alldf.csv')
+        alldf.to_csv('results/geojson.csv')
 
     # make all other maps
     for i, f in enumerate(mapnos):
@@ -396,10 +396,13 @@ def merge_map_data(path, featuredf, store=False):
 
         # append results after each map
         if store:
-            with open('results/alldf.csv', 'a') as storefile:
+            with open('results/geojson.csv', 'a') as storefile:
                 onedf.to_csv(storefile, header=False)
 
         alldf = pd.concat((alldf, onedf), axis=0, ignore_index=True)
+
+    with open('results/geojsondf.pkl', 'wb') as f:
+        	pickle.dump(alldf, f)
 
     return alldf
 
@@ -459,7 +462,7 @@ def load_featuredf():
     Returns:
         feature pandas dataframe
     """
-    with open('featuresdf.pkl', 'rb') as f:
+    with open('intermediate/features/featuredf.pkl', 'rb') as f:
         fdf = pickle.load(f)
 
     # exclude Treasure Island
@@ -475,9 +478,9 @@ if __name__ == '__main__':
     fdf = load_featuredf()
 
     # may take a while
-    alldf = merge_map_data('results', fdf, store=True)
+    alldf = merge_map_data('intermediate/cutlist', fdf, store=True)
 
-    gjson = make_json(alldf.cnum, alldf.polygon, alldf.color,
+    gjson = make_json(alldf.cnum, alldf.polygon,
                       alldf.rgmatrix, alldf.mapno, alldf.fbars)
     with open('results/geo.json', 'wb') as f:
         f.write(json.dumps(gjson))
