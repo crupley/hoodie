@@ -112,16 +112,16 @@
 
           // set polygon properties
           map.data.setStyle(function(feature) {
-            var color = feature.getProperty("color")
+            // var color = feature.getProperty("color")
             if (feature.getProperty("mapno") == "") {
               return {
                 visible: true,
-                fillColor: color
+                // fillColor: color
               }
             } else { 
               return {
                 visible: false,
-                fillColor: color
+                // fillColor: color
               }
             }
           })
@@ -194,16 +194,16 @@
           // removes all other styles set
           map.data.setStyle(function(feature){
             var mapno = feature.getProperty('mapno')
-            var color = feature.getProperty('color')
+            // var color = feature.getProperty('color')
             if (mapno == document.getElementById("test").innerHTML) {
               return {
                 visible: true,
-                fillColor: color
+                // fillColor: color
               }
             } else { 
               return {
                 visible: false,
-                fillColor: color
+                // fillColor: color
               }
             }
           })
