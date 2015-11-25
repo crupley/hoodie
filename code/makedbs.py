@@ -758,8 +758,13 @@ def scrape_walkscore(lat, lon):
     Returns:
       None; stores results in postgres database
     """
-    with open('/Users/crupley/.api/walkscore.txt') as f:
-        wskey = f.readline().strip()
+
+
+    # with open('/Users/crupley/.api/walkscore.txt') as f:
+    #     wskey = f.readline().strip()
+
+    # insert your api key here:
+    # wskey = [your API key]
 
     requrl = 'http://api.walkscore.com/score'
     payload = {'wsapikey': wskey,
@@ -858,6 +863,42 @@ def make_walkscore():
         VALUES (%s)'''
 
     db_insert(df, q_string)
+
+def make_all_db():
+    """
+    Populates tables in database with data if empty
+
+    Args:
+        None
+    Returns:
+        None
+    """
+    if len(get_db('assessment')) == 0:
+        make_assessment()
+
+    if len(get_db('business')) == 0:
+        make_business()
+
+    if len(get_db('sfpd')) == 0:
+        make_sfpd()
+
+    if len(get_db('usc_age_gender')) == 0:
+        make_usc_age_gender()
+
+    if len(get_db('usc_household')) == 0:
+        make_usc_household()
+
+    if len(get_db('usc_pop')) == 0:
+        make_usc_pop()
+
+    if len(get_db('usc_shapefile')) == 0:
+        make_usc_shapefile()
+
+    if len(get_db('walkscore')) == 0:
+        make_walkscore()
+
+    return None
+
 
 
 def sf_to_df(filename):
