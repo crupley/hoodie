@@ -1,12 +1,11 @@
 import numpy as np
-from collections import Counter
 
 from graph_tool.all import *
 
 from code.featurize import find_closest
 
 """
-Collection of functions for building and analyzing graph model
+Collection of functions for building and analyzing a graph model.
 """
 
 
