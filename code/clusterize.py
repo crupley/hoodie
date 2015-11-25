@@ -93,19 +93,45 @@ def cutcon(row, graph):
 
 
 def cutrow(row, graph):
-	'''
-	reduce graph from list of cuts
-	'''
+	"""
+	Remove edges in graph.
+	To be used in .apply on pandas dataframe of edges.
+
+	Args:
+		row : row from a pandas DataFrame (pandas Series)
+			containing 'source' and 'target' features (edges)
+	Returns:
+		None
+	"""
 	graph.remove_edge(row.source, row.target)
 	return
 
 
 def make_graph(cutdf):
+	"""
+	Convert dataframe of a list of edges into a networkx graph object
+
+	Args:
+		cutdf : pandas dataframe containing list of edges with
+			features 'source' and 'target' containing node numbers
+	Returns:
+		networkx graph object
+	"""
 	g = nx.from_pandas_dataframe(cutdf, 'source', 'target')
 	return g
 
 
 def assign_clusters(nodelist, graph):
+	"""
+	Assigns a cluster number to each node in a graph
+
+	Args:
+		nodelist : nodes in the graph to be assigned to a cluster,
+			iterable of ints
+		graph : networkx graph object
+	Returns:
+		Assigned cluster numbers, pandas Series indexed by node number, ints
+	"""
     cc = list(nx.connected_components(graph))
     
     cnum = pd.Series(-1, index=nodelist)
