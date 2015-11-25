@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
+import pickle
 
 import scipy.interpolate
 from scipy.interpolate import Rbf
@@ -472,13 +473,21 @@ class featurizer():
 
 if __name__ == '__main__':
 
-    f = featurizer()
+    feat = featurizer()
 
     print 'Making features'
-    f.add_features(f.alltables, verbose=True)
+    feat.add_features(feat.alltables, verbose=True)
 
     print 'Smoothing features'
-    f.smooth_features()
+    feat.smooth_features()
 
     print 'Making edges'
-    f.make_edges()
+    feat.make_edges()
+
+    print 'Saving features'
+    with open('intermediate/features/featurizer.pkl', 'wb') as f:
+        pickle.dump(feat, f)
+    with open('intermediate/features/featuresdf.pkl', 'wb') as f:
+        pickle.dump(feat.fsmooth, f)
+
+    print 'Featurization complete.\n'
