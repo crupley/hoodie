@@ -70,39 +70,44 @@ def build_graph(edges, distances, graph_name=None):
     return g
 
 
-def graph_reduce_gt(graph, filename):
+def graph_reduce_gt(graph, filename=None):
     '''
     graph with dist and btw attributes
     filename to store the cutlist
     '''
     """
-    Reduces a graph, edge-by-edge, in order of a balance between
-    most-connected and highest feature distance using
+    Reduces a graph, edge-by-edge, in order of a combination of
+    most-connected and highest feature distance edges using
     graph betweenness similarity.
 
     Args:
-        edges : pandas dataframe, list of edges by node pairs
-            containing features 'node1' and 'node2'
-        distances : pandas series/dataframe, length of edges
-            containing the feature distance between adajacent nodes
+        graph : graph-tool graph object to be reduced
+        filename : file location to save results in csv
     Returns:
-        graph-tool graph object
+        list of node pair tuples in order from first cut to last
     """
+    # make a copy
     g = Graph(graph)
+
     cuts = []
-    with open(filename, 'wb') as f:
-        f.write('source,target,num_edges,timestamp\n')
+    if filename is not None:
+        with open(filename, 'wb') as f:
+            f.write('source,target,num_edges,timestamp\n')
+
+    # reduce graph
     while g.num_edges() > 0:
         betweenness(g, eprop = g.ep.btw, weight = g.ep.dist)
 
-        meidx = np.argmax(g.ep.btw.fa)
-        maxedge = list(g.edges())[meidx]
-        metup = eval(str(maxedge))
+        meidx = np.argmax(g.ep.btw.fa)  # max edge index
+        maxedge = list(g.edges())[meidx]  # max edge nodes
+        metup = eval(str(maxedge))  # max edge tuple
         cuts.append(metup)
         
-        wstr = '%d,%d,%d,%f\n' % (metup[0], metup[1], g.num_edges(), time())
-        with open(filename, 'a') as f:
-            f.write(wstr)
+        if filename is not None:
+            wvalues = (metup[0], metup[1], g.num_edges(), time())
+            wstr = '%d,%d,%d,%f\n' % wvalues
+            with open(filename, 'a') as f:
+                f.write(wstr)
         
         g.remove_edge(maxedge)
     return cuts
