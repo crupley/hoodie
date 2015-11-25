@@ -1,8 +1,12 @@
 import numpy as np
+import pandas as pd
+import itertools
+import os
 
 from graph_tool.all import *
 
-from code.featurize import find_closest
+from code.featurize import find_closest, fdist_by_node
+from code.clusterize import FDICT
 
 """
 Collection of functions for building and analyzing a graph model.
@@ -71,10 +75,6 @@ def build_graph(edges, distances, graph_name=None):
 
 
 def graph_reduce_gt(graph, filename=None):
-    '''
-    graph with dist and btw attributes
-    filename to store the cutlist
-    '''
     """
     Reduces a graph, edge-by-edge, in order of a combination of
     most-connected and highest feature distance edges using
@@ -111,3 +111,51 @@ def graph_reduce_gt(graph, filename=None):
 
         g.remove_edge(maxedge)
     return cuts
+
+if __name__ == '__main__':
+
+    with open('results/features/featuresdf.pkl', 'rb') as f:
+        fdf = pickle.load(f)
+
+    print 'Making graph edges'
+    edges = make_edges(fdf[['lat', 'lon']])
+
+    print 'Making graphs for each feature set'
+    # each of the 9 features
+    fnums = range(9)
+    
+    # calculate permutations
+    maxfeatures = 3
+    perms = []
+    for i in range(1, maxfeatures + 1):
+        perms.extend(list(itertools.combinations(fnums, i)))
+
+    # iterate over every permutation
+    for featureset in perms:
+        fnames = [FDICT[c] for c in featureset]
+        fdist = edges.apply(lambda x: fdist_by_node(x.node1, x.node2,
+                            df[[fnames]]), axis=1)
+        fnbase = ('%02d' * len(featureset)) % featureset
+        name = 'CL' + fnbase
+        g = build_graph(edges, fdist, graph_name=name)
+
+        # save
+        fn = 'intermediate/graphs/g' + fnbase + '.gt'
+        g.save(fn)
+
+    print 'Making cut list from each graph'
+    # list of gt files in directory
+    allfiles = os.listdir('intermediate/graphs')
+    filelist = [f for f in allfiles if (f[-2:] == 'gt')]
+
+    for f in filelist:
+        loadfn = 'intermediate/graphs/' + f
+        g = load_graph(fn)
+
+        writefn = 'intermediate/cutlist/' + g.gp.Name + '.csv'
+        graph_reduce_gt(g, filename=writefn)
+
+    print 'Complete'
+
+
+
