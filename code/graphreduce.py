@@ -9,6 +9,7 @@ from code.featurize import find_closest
 Collection of functions for building and analyzing graph model
 """
 
+
 def make_edges(latlondf, **kwargs):
     """
     Generate a list of edges between adjacent latitude/longitude points
@@ -25,14 +26,14 @@ def make_edges(latlondf, **kwargs):
         return find_closest(x, latlondf)
 
     # return list of connected nodes for each node in latlondf
-    n = latlondf.apply(edgelambda, axis = 1)
+    n = latlondf.apply(edgelambda, axis=1)
 
     edges = pd.DataFrame(columns=['node1', 'node2'])
 
     # convert 'list of lists' to flatter dataframe
     for node1 in n.index:
         for node2 in n.ix[node1]:
-            newrow = {'node1':node1, 'node2':node2}
+            newrow = {'node1': node1, 'node2': node2}
             edges = edges.append(newrow, ignore_index=True)
     edges.index.name = 'edge'
     return edges.astype('int')
@@ -58,8 +59,8 @@ def build_graph(edges, distances, graph_name=None):
     g.graph_properties['Name'] = gp
     g.graph_properties['Name'] = graph_name
     eprop = g.new_edge_property('float')
-    g.edge_properties['dist'] = eprop #feature distance
-    g.edge_properties['btw'] = eprop  #betweenness
+    g.edge_properties['dist'] = eprop  # feature distance
+    g.edge_properties['btw'] = eprop  # betweenness
 
     # create edges and edge weights
     g.add_edge_list(zip(edges.node1, edges.node2))
@@ -96,18 +97,18 @@ def graph_reduce_gt(graph, filename=None):
 
     # reduce graph
     while g.num_edges() > 0:
-        betweenness(g, eprop = g.ep.btw, weight = g.ep.dist)
+        betweenness(g, eprop=g.ep.btw, weight=g.ep.dist)
 
         meidx = np.argmax(g.ep.btw.fa)  # max edge index
         maxedge = list(g.edges())[meidx]  # max edge nodes
         metup = eval(str(maxedge))  # max edge tuple
         cuts.append(metup)
-        
+
         if filename is not None:
             wvalues = (metup[0], metup[1], g.num_edges(), time())
             wstr = '%d,%d,%d,%f\n' % wvalues
             with open(filename, 'a') as f:
                 f.write(wstr)
-        
+
         g.remove_edge(maxedge)
     return cuts
