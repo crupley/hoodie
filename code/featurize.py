@@ -464,6 +464,7 @@ class featurizer():
         """
 
         def edgelambda(x):
+            """find_closest for use in apply to dataframe"""
             return find_closest(x, df)
 
         self.edges = self.features.apply(edgelambda, axis=1)
