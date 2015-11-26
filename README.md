@@ -46,7 +46,12 @@ In order to determine the new neighborhood boundaries, I use a blend of two diff
 
 * This weighted graph is then reduced, borrowing the [Girvan-Newman algorithm](https://en.wikipedia.org/wiki/Girvan%E2%80%93Newman_algorithm) from graph theory. In the algorithm, edges are removed sequentially according to how 'connected' they are until a group of nodes is completely separated from the rest; a new neighborhood is born! When the similarity weighting is added, the edges now need to have a combination of high connectivity and low similarity to be removed. In this way, a border is drawn between dissimilar chunks of the city.
 
-* Finally, in order to determine the optimal number of neighborhoods, each time a neighborhood is split, I examine how similar the blocks in that neighborhood are to the neighborhood average using a metric called Within Cluster Sum of Squares Error (wcsse). As the clusters get smaller, the blocks in them will be more similar to each other. The optimal value is chosen where the rate of decrease of the wcsse starts to level off. After inspecting a subset of the feature sets, all of them appeared to have an optimal level between 20 to 30 neighborhoods. For consistency, I then fixed the number of neighborhoods at 25 for all combinations. 
+* Finally, in order to determine the optimal number of neighborhoods, each time a neighborhood is split, I examine how similar the blocks in that neighborhood are to the neighborhood average using a metric called Within Cluster Sum of Squares Error (wcsse). As the clusters get smaller, the blocks in them will be more similar to each other. The optimal value is chosen where the rate of decrease of the wcsse starts to level off. After inspecting a subset of the feature sets, all of them appeared to have an optimal level between 20 to 30 neighborhoods. For consistency, I then fixed the number of neighborhoods at 25 for all combinations.
+
+### Under the hood
+
+All of the data analysis for this project was performed in [python](https://www.python.org/)(v2). The key python packages used include NumPy, pandas, and graph-tool. The visualization and web interface was built on the [Google Maps Javascript API](https://developers.google.com/maps/documentation/javascript/) and the data was plotted using [Google Charts API](https://developers.google.com/chart/).
+
 
 ## Data Sources
 
@@ -60,11 +65,26 @@ More information, including links to all sources, can be found in the [databook]
 
 ## Repo Structure
 
+This repo is organized as follows
+
+* code - python code used to produce these results
+* data - file structure for data used. 
+* images - image files for reference
+* intermediate - storage location for intermediate results during calculation of the model
+* results - final results of the model
+* web - code and data required for web app
+
 ## Code
 
-## Reproduce
+Description of code and package dependencies can be found in the [code readme](code/README.md)
 
-1. Download raw data from sources as outlined in the [databook](data/databook.md)
+## Reproduction of Results
+
+If you are interested in reproducing the results here, you can do so by following these instructions. All steps should be executed from the root folder of this repo ('hoodie/')
+
+1. Clone this repo
+
+1. Download raw data from sources as outlined in the [databook](data/databook.md) and place in the appropriate locations.
 
 2. Setup postgres database:
 
@@ -94,3 +114,5 @@ More information, including links to all sources, can be found in the [databook]
     ```
     $ python main.py
     ```
+    
+There is a considerable amount of computation involved; especially for the graph-reduction portion. You may want to start with just a subset of the feature combinations.
