@@ -1,5 +1,7 @@
 # Codebook
 
+Organization of code files and requirements.
+
 ## Files and contents
 
 Filename | Function
@@ -14,14 +16,16 @@ clusterize.py | Final function set for creating neighborhood clusters.
 
 ## External dependencies
 
-* pandas
-* numpy
-* matplotlib
-* scipy: Rbf, Delaunay
-* sklearn: StandardScaler, pairwise_distances
-* psycopg2
-* sqlalchemy
-* pyshp
-* shapely: polygon, mapping, cascaded_union, polygonize
-* graph-tool
-* networkx
+The following python packages must be installed for everything to function.
+
+* pandas - dataframe functionality
+* numpy - 
+* matplotlib - for some plotting and colormaps
+* scipy - for interpolation and smoothing (Rbf, Delaunay)
+* sklearn - scaling and similarity (StandardScaler, pairwise_distances)
+* psycopg2 - connecting to postgres database
+* sqlalchemy - bridge between pandas and postgres database
+* [pyshp](https://pypi.python.org/pypi/pyshp) - for loading data from census shapefiles
+* [shapely](https://pypi.python.org/pypi/Shapely) - for manipulating and joining shapefiles (polygon, mapping, cascaded_union, polygonize)
+* [graph-tool](https://graph-tool.skewed.de/) - a fast graph network analysis package
+* [networkx](https://networkx.github.io/) - additional tools for working with graph networks
