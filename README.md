@@ -32,11 +32,21 @@ After you have a set of features you would like to explore, you can then begin t
 
 ## How it works
 
-In order to determine the new neighborhood boundaries, I use a blend of two different clustering methods; kmeans clustering and edge betweenness from graph theory.
+In order to determine the new neighborhood boundaries, I use a blend of two different clustering methods; kmeans clustering and edge betweenness from graph theory. Creation of the model is as follows,
 
+* All of the data from different sources is aggregated, binned (via interpolation), and smoothed. The bins used are defined by the US Census-defined blocks of which there are about 7,300 in the city.
 
+<example bin plot>
 
+* A graph is then created by creating connections (edges) between adajacent data bins (nodes). The graph looks like this:
 
+<graph image>
+
+* The edges in the graph are then weighted according to how similar the connecte nodes are. The weight is calculated as the [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) between the feature vectors of the two nodes. Since the subset of features depends on the user's input, a different graph is constructed for each possible combination. There are 9 possible features and choosing 1, 2, or 3 features leads to 129 combinations. A final unweighted graph is thrown in to make it an even 130.
+
+* This weighted graph is then reduced, borrowing the [Girvan-Newman algorithm](https://en.wikipedia.org/wiki/Girvan%E2%80%93Newman_algorithm) from graph theory. In the algorithm, edges are removed sequentially according to how 'connected' they are until a group of nodes is completely separated from the rest; a new neighborhood is born! When the similarity weighting is added, the edges now need to have a combination of high connectivity and low similarity to be removed. In this way, a border is drawn between dissimilar chunks of the city.
+
+* Finally, in order to determine the optimal number of neighborhoods, each time a neighborhood is split, I examine how similar the blocks in that neighborhood are to the neighborhood average using a metric called Within Cluster Sum of Squares Error (wcsse). As the clusters get smaller, the blocks in them will be more similar to each other. The optimal value is chosen where the rate of decrease of the wcsse starts to level off. After inspecting a subset of the feature sets, all of them appeared to have an optimal level between 20 to 30 neighborhoods. For consistency, I then fixed the number of neighborhoods at 25 for all combinations. 
 
 ## Data Sources
 
