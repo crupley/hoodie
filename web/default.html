@@ -48,6 +48,33 @@
         width: 150px;
       }
 
+      #loading {
+        /*copied from map style*/
+        direction: ltr;
+        overflow: hidden;
+        text-align: center;
+        color: rgb(86, 86, 86);
+        font-family: Roboto, Arial, sans-serif;
+        -webkit-user-select: none;
+        font-size: 11px;
+        padding: 8px;
+        border-radius: 2px;
+        -webkit-background-clip: padding-box;
+        box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+        min-width: 21px;
+        background-color: rgb(255, 255, 255);
+        background-clip: padding-box;
+        /*added*/
+        position: absolute;
+        margin: auto;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        height: 100px;
+        width: 100px;
+      }
+
       #header {
         /*copied from map style*/
         direction: ltr;
@@ -119,7 +146,8 @@
           map.setMapTypeId(customMapTypeId);
 
           // load geojson, alternate sources in comments
-          map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
+          map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json', "", function(){
+            document.getElementById("loading").style.display = "none"});
           // map.data.loadGeoJson('/geo.json');
 
           // make only null map visible
@@ -134,7 +162,7 @@
               }
             }
           })
-          
+
           // actions to perform when polygon is clicked
           map.data.addListener('click', function(event) {
             map.data.revertStyle();
@@ -282,6 +310,10 @@
     <div id="header">
       <h1>hoodieSF</h1>
       Find your neighborhood
+    </div>
+
+    <div id="loading">
+      <p id="loadtext">Loading Neighborhoods...</p>
     </div>
 
     <!-- side panel -->
