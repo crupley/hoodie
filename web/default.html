@@ -73,7 +73,7 @@
       #footer {
         /*copied from map style*/
         direction: ltr;
-        overflow: hidden;
+        overflow: scroll;
         color: rgb(86, 86, 86);
         font-family: Roboto, Arial, sans-serif;
         -webkit-user-select: none;
@@ -119,7 +119,7 @@
           map.setMapTypeId(customMapTypeId);
 
           // load geojson
-          map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
+          // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
           // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/test.json');
           // map.data.loadGeoJson('/geo.json');
 
@@ -265,6 +265,15 @@
           chart.draw(data, options);
         }
       </script>
+      <script type="text/javascript">
+        function toggle_visibility(id) {
+           var e = document.getElementById(id);
+           if(e.style.display == 'block')
+              e.style.display = 'none';
+           else
+              e.style.display = 'block';
+       }
+      </script>
 
     <div id="header">
       <h1>hoodieSF</h1>
@@ -273,8 +282,12 @@
 
     <!-- side panel -->
     <div id="panel">
+      <div id="hamburger">
+        <button onclick="toggle_visibility('Options');">show/hide</button>
+      </div>
       <div id="Options">
         <div id="select">
+          <hr>
           <b>1. Select Features:</b>
           <!-- checkbox -->
           <p align="right">
@@ -316,10 +329,10 @@
       </div>
     </div>
     <div id="footer">
-      <div style="float:left; margin-left: 10px; width: 160px">
+      <div style="float:left; margin-left: 10px; width: 120px">
         <h1>About:</h1>
       </div>
-      <div style="float:left; margin-top: 10px">
+      <div style="margin-top: 10px; margin-left: 125px">
         hoodieSF is a project created to help visualize the fluidity of neighborhood boundaries in the city of San Francisco.<br>
         <br>
         It was created by Chris Rupley during studies at <a href="http://www.galvanize.com/">Galvanize Inc.</a><br>
