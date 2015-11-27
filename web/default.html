@@ -118,9 +118,8 @@
           map.mapTypes.set(customMapTypeId, customMapType);
           map.setMapTypeId(customMapTypeId);
 
-          // load geojson
+          // load geojson, alternate sources in comments
           map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
-          // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/test.json');
           // map.data.loadGeoJson('/geo.json');
 
           // set polygon properties
