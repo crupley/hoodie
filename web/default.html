@@ -13,6 +13,15 @@
       ul {
         padding-left: 15px;
       }
+      #draw {
+        background-color: rgb(86, 86, 86);
+        border-radius:6px;
+        color: #fff;
+        font-family: Roboto, Arial, sans-serif;
+        /*font-family: 'Oswald';*/
+        font-size: 20px;
+        border:none;
+      }
       #map {
         height: 90%;
       }
@@ -265,43 +274,51 @@
     <!-- side panel -->
     <div id="panel">
       <div id="Options">
-        <b>1. Select Features:</b>
-        <!-- checkbox -->
-        <p align="right">
-          Property Value: <input type="checkbox" id="cb00"><br>
-          Grocery Stores: <input type="checkbox" id="cb01"><br>
-          Restaurants: <input type="checkbox" id="cb02"><br>
-          Retail Stores: <input type="checkbox" id="cb03"><br>
-          Crime: <input type="checkbox" id="cb04"><br>
-          Gender: <input type="checkbox" id="cb05"><br>
-          Household Size: <input type="checkbox" id="cb06"><br>
-          Population: <input type="checkbox" id="cb07"><br>
-          Walkscore: <input type="checkbox" id="cb08"><br>
-        </p>
-        <hr>
-        <b>2. Click:</b>
-        <button onclick="setMapno()">Draw!</button><br>
-        <p id="lessfeatures"></p>
-        <hr>
-        <b>3. Explore Map:</b><br>
-        <ul>
-          <li>Click neighborhoods to color according to similarity.</li>
-          <li>More green: more similar.</li>
-          <li>More red: less similar.</li>
-          <li>Bar chart of neighborhood's features below.</li>
-        </ul>
-        <!-- to hide -->
-        Selected: <p id="results"></p>
-        <br>
-        test: <p id="test"></p>
-        n: <p id="n"></p>
+        <div id="select">
+          <b>1. Select Features:</b>
+          <!-- checkbox -->
+          <p align="right">
+            Property Value: <input type="checkbox" id="cb00"><br>
+            Grocery Stores: <input type="checkbox" id="cb01"><br>
+            Restaurants: <input type="checkbox" id="cb02"><br>
+            Retail Stores: <input type="checkbox" id="cb03"><br>
+            Crime: <input type="checkbox" id="cb04"><br>
+            Gender: <input type="checkbox" id="cb05"><br>
+            Household Size: <input type="checkbox" id="cb06"><br>
+            Population: <input type="checkbox" id="cb07"><br>
+            Walkscore: <input type="checkbox" id="cb08"><br>
+          </p>
+          <hr>
+        </div>
+        <div id="click">
+          <b>2. Click:</b>
+          <span style="display:inline-block; vertical-align:middle">
+          <button onclick="setMapno()" id="draw" style="float: right">draw!</button></span><br>
+          <p id="lessfeatures"></p>
+        </div>
+        <div id="explore">
+          <hr>
+          <b>3. Explore Map:</b><br>
+          <ul>
+            <li>Click neighborhoods to color according to similarity.</li>
+            <li>More green: more similar.</li>
+            <li>More red: less similar.</li>
+            <li>Bar chart of neighborhood's features below.</li>
+          </ul>
+        </div>
+        <div id="hidden" style="display: none">
+          <p id="results"></p>
+          <p id="test"></p>
+          <p id="n"></p>
+        </div>
         <!-- joe's jq
         $(“checkbox”).hover(function(e){
           e.preventDefault():
           alert(“this has been clicked”);
         }); -->
       </div>
-      <div id="chart_div" style="width:150; height:200"></div>
+      <div id="chart_div" style="width:150; height:200">
+      </div>
     </div>
     <div id="footer">
       <div style="float:left; margin-left: 10px; width: 160px">
