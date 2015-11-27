@@ -10,6 +10,9 @@
         margin: 0;
         padding: 0;
       }
+      ul {
+        padding-left: 15px;
+      }
       #map {
         height: 90%;
       }
@@ -261,15 +264,7 @@
 
     <!-- side panel -->
     <div id="panel">
-      <div id="choosetype">
-        <b>1. Select map type</b><br>
-        <select id="maptype">
-          <option value="neighborhoods">Neighborhoods</option>
-          <option value="data">Data</option>
-        </select>
-      </div>
       <div id="Options">
-        <hr>
         <b>1. Select Features:</b>
         <!-- checkbox -->
         <p align="right">
@@ -289,6 +284,12 @@
         <p id="lessfeatures"></p>
         <hr>
         <b>3. Explore Map:</b><br>
+        <ul>
+          <li>Click neighborhoods to color according to similarity.</li>
+          <li>More green: more similar.</li>
+          <li>More red: less similar.</li>
+          <li>Bar chart of neighborhood's features below.</li>
+        </ul>
         <!-- to hide -->
         Selected: <p id="results"></p>
         <br>
