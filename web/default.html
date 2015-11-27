@@ -145,11 +145,13 @@
           map.mapTypes.set(customMapTypeId, customMapType);
           map.setMapTypeId(customMapTypeId);
 
-          // load geojson, alternate sources in comments
+          // load geojson, remove loading box when done
+          // alternate data sources in commented lines
           map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json', "", function(){
             document.getElementById("loading").style.display = "none"});
           // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json')
-          // map.data.loadGeoJson('/geo.json');
+          // map.data.loadGeoJson('/geo.json', "", function(){
+          //   document.getElementById("loading").style.display = "none"}));
 
           // make only null map visible
           map.data.setStyle(function(feature) {
@@ -374,7 +376,7 @@
       <div style="margin-top: 10px; margin-left: 125px">
         hoodieSF is a project created to help visualize the fluidity of neighborhood boundaries in the city of San Francisco.<br>
         <br>
-        It was created by Chris Rupley during studies at <a href="http://www.galvanize.com/">Galvanize Inc.</a><br>
+        It was created by <a href="http://www.linkedin.com/in/crupley">Chris Rupley</a> during studies at <a href="http://www.galvanize.com/">Galvanize Inc.</a><br>
         <br>
         Source code and more detailed information on the project is available via the Github repo: <a href="https://github.com/crupley/hoodie">hoodie</a><br>
       </div>
