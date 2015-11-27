@@ -148,6 +148,7 @@
           // load geojson, alternate sources in comments
           map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json', "", function(){
             document.getElementById("loading").style.display = "none"});
+          // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json')
           // map.data.loadGeoJson('/geo.json');
 
           // make only null map visible
@@ -312,8 +313,8 @@
       Find your neighborhood
     </div>
 
-    <div id="loading">
-      <p id="loadtext">Loading Neighborhoods...</p>
+    <div id="loading" style="display: table">
+      <span style="display: table-cell; vertical-align: middle">Loading Neighborhoods...</span>
     </div>
 
     <!-- side panel -->
