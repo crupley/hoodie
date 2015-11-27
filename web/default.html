@@ -119,7 +119,7 @@
           map.setMapTypeId(customMapTypeId);
 
           // load geojson
-          // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
+          map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
           // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/test.json');
           // map.data.loadGeoJson('/geo.json');
 
@@ -283,49 +283,51 @@
     <!-- side panel -->
     <div id="panel">
       <div id="hamburger">
-        <button onclick="toggle_visibility('Options');">&#9776;</button>
+        <button onclick="toggle_visibility('showhide');">&#9776;</button>
       </div>
-      <div id="Options">
-        <div id="select">
-          <hr>
-          <b>1. Select Features:</b>
-          <!-- checkbox -->
-          <p align="right">
-            Property Value: <input type="checkbox" id="cb00"><br>
-            Grocery Stores: <input type="checkbox" id="cb01"><br>
-            Restaurants: <input type="checkbox" id="cb02"><br>
-            Retail Stores: <input type="checkbox" id="cb03"><br>
-            Crime: <input type="checkbox" id="cb04"><br>
-            Gender: <input type="checkbox" id="cb05"><br>
-            Household Size: <input type="checkbox" id="cb06"><br>
-            Population: <input type="checkbox" id="cb07"><br>
-            Walkscore: <input type="checkbox" id="cb08"><br>
-          </p>
-          <hr>
+      <div id="showhide" style="display: block">
+        <div id="Options">
+          <div id="select">
+            <hr>
+            <b>1. Select Features:</b>
+            <!-- checkbox -->
+            <p align="right">
+              Property Value: <input type="checkbox" id="cb00"><br>
+              Grocery Stores: <input type="checkbox" id="cb01"><br>
+              Restaurants: <input type="checkbox" id="cb02"><br>
+              Retail Stores: <input type="checkbox" id="cb03"><br>
+              Crime: <input type="checkbox" id="cb04"><br>
+              Gender: <input type="checkbox" id="cb05"><br>
+              Household Size: <input type="checkbox" id="cb06"><br>
+              Population: <input type="checkbox" id="cb07"><br>
+              Walkscore: <input type="checkbox" id="cb08"><br>
+            </p>
+            <hr>
+          </div>
+          <div id="click">
+            <b>2. Click:</b>
+            <span style="display:inline-block; vertical-align:middle">
+            <button onclick="setMapno()" id="draw" style="float: right">draw!</button></span><br>
+            <p id="lessfeatures"></p>
+          </div>
+          <div id="explore">
+            <hr>
+            <b>3. Explore Map:</b><br>
+            <ul>
+              <li>Click neighborhoods to color according to similarity.</li>
+              <li>More green: more similar.</li>
+              <li>More red: less similar.</li>
+              <li>Bar chart of neighborhood's features below.</li>
+            </ul>
+          </div>
+          <div id="hidden" style="display: none">
+            <p id="results"></p>
+            <p id="test"></p>
+            <p id="n"></p>
+          </div>
         </div>
-        <div id="click">
-          <b>2. Click:</b>
-          <span style="display:inline-block; vertical-align:middle">
-          <button onclick="setMapno()" id="draw" style="float: right">draw!</button></span><br>
-          <p id="lessfeatures"></p>
+        <div id="chart_div" style="width:150; height:200">
         </div>
-        <div id="explore">
-          <hr>
-          <b>3. Explore Map:</b><br>
-          <ul>
-            <li>Click neighborhoods to color according to similarity.</li>
-            <li>More green: more similar.</li>
-            <li>More red: less similar.</li>
-            <li>Bar chart of neighborhood's features below.</li>
-          </ul>
-        </div>
-        <div id="hidden" style="display: none">
-          <p id="results"></p>
-          <p id="test"></p>
-          <p id="n"></p>
-        </div>
-      </div>
-      <div id="chart_div" style="width:150; height:200">
       </div>
     </div>
     <div id="footer">
