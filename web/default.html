@@ -107,7 +107,7 @@
           map.setMapTypeId(customMapTypeId);
 
           // load geojson
-          map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
+          // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
           // map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/test.json');
           // map.data.loadGeoJson('/geo.json');
 
@@ -162,6 +162,23 @@
           var x07 = document.getElementById("cb07");
           var x08 = document.getElementById("cb08");
           var mapno = ""
+
+          var totCheck = x00.checked +
+                         x01.checked +
+                         x02.checked +
+                         x03.checked +
+                         x04.checked +
+                         x05.checked +
+                         x06.checked +
+                         x07.checked +
+                         x08.checked
+
+          // Print warning if more than 3 features are selected
+          if (totCheck > 3) {
+            document.getElementById("lessfeatures").innerHTML = "Please select 3 or fewer features."
+          } else {
+            document.getElementById("lessfeatures").innerHTML = ""
+          };
 
           if (x00.checked) {mapno = mapno.concat('00')}
           if (x01.checked) {mapno = mapno.concat('01')}
@@ -253,7 +270,7 @@
       </div>
       <div id="Options">
         <hr>
-        <b>2. Select Features:</b>
+        <b>1. Select Features:</b>
         <!-- checkbox -->
         <p align="right">
           Property Value: <input type="checkbox" id="cb00"><br>
@@ -267,9 +284,12 @@
           Walkscore: <input type="checkbox" id="cb08"><br>
         </p>
         <hr>
-        <b>3. Click:</b>
+        <b>2. Click:</b>
         <button onclick="setMapno()">Draw!</button><br>
-        <br>
+        <p id="lessfeatures"></p>
+        <hr>
+        <b>3. Explore Map:</b><br>
+        <!-- to hide -->
         Selected: <p id="results"></p>
         <br>
         test: <p id="test"></p>
