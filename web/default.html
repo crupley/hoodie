@@ -122,7 +122,7 @@
           map.data.loadGeoJson('https://raw.githubusercontent.com/crupley/hoodie/master/results/geo.json');
           // map.data.loadGeoJson('/geo.json');
 
-          // set polygon properties
+          // make only null map visible
           map.data.setStyle(function(feature) {
             if (feature.getProperty("mapno") == "") {
               return {
@@ -162,6 +162,8 @@
             drawChart(event.feature.getProperty('bars'));
           });
         }
+
+        // get checkbox settings
         function setMapno() {
           var x00 = document.getElementById("cb00");
           var x01 = document.getElementById("cb01");
@@ -191,6 +193,7 @@
             document.getElementById("lessfeatures").innerHTML = ""
           };
 
+          // concatenate feature numbers into string
           if (x00.checked) {mapno = mapno.concat('00')}
           if (x01.checked) {mapno = mapno.concat('01')}
           if (x02.checked) {mapno = mapno.concat('02')}
@@ -201,6 +204,7 @@
           if (x07.checked) {mapno = mapno.concat('07')}
           if (x08.checked) {mapno = mapno.concat('08')}
 
+          // store current map number in hidden div
           document.getElementById("test").innerHTML = mapno
 
           // set style according to mapno (make only this map visible)
@@ -265,6 +269,7 @@
         }
       </script>
       <script type="text/javascript">
+        // Show/hide side bar
         function toggle_visibility(id) {
            var e = document.getElementById(id);
            if(e.style.display == 'block')
