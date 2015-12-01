@@ -169,6 +169,8 @@
           // actions to perform when polygon is clicked
           map.data.addListener('click', function(event) {
             map.data.revertStyle();
+            // add white border to selected shape
+            map.data.overrideStyle(event.feature, {fillColor: '#00ff00', strokeColor: '#ffffff', zIndex: 1000});
             var n = event.feature.getProperty('neibno')
             document.getElementById("results").innerHTML = n
 
