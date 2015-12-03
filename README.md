@@ -22,11 +22,9 @@ You can choose any combination of up to three of the following features:
 
 Once you select your features, click the 'Draw!' button and a new set of neighborhoods will be loaded.
 
-<2 neighborhoods image>
 
 After you have a set of features you would like to explore, you can then begin to interact with the map. Clicking on a particular neighborhood with cause each neighborhood to be colored according to how similar it is to the one you clicked; green is most similar, red is least. A bar chart of the features you selected is also displayed for the selected neighborhood in the sidebar so you see what makes your neighborhoods similar.
 
-<2 similarity image>
 
 
 
@@ -37,10 +35,12 @@ In order to determine the new neighborhood boundaries, I use a blend of two diff
 * All of the data from different sources is aggregated, binned (via interpolation), and smoothed. The bins used are defined by the US Census-defined blocks of which there are about 7,300 in the city.
 
 <example bin plot>
+![Binned population](/images/datapopulation.png)
 
 * A graph is then created by creating connections (edges) between adajacent data bins (nodes). The graph looks like this:
 
 <graph image>
+![graph](/images/plotedges.png)
 
 * The edges in the graph are then weighted according to how similar the connecte nodes are. The weight is calculated as the [Euclidean distance](https://en.wikipedia.org/wiki/Euclidean_distance) between the feature vectors of the two nodes. Since the subset of features depends on the user's input, a different graph is constructed for each possible combination. There are 9 possible features and choosing 1, 2, or 3 features leads to 129 combinations. A final unweighted graph is thrown in to make it an even 130.
 
@@ -112,7 +112,7 @@ If you are interested in reproducing the results here, you can do so by followin
 4. execute main.py:
 
     ```
-    $ python main.py
+    $ python code/main.py
     ```
     
 There is a considerable amount of computation involved; especially for the graph-reduction portion. You may want to start with just a subset of the feature combinations.
