@@ -19,7 +19,7 @@ clusterize.py | Final function set for creating neighborhood clusters.
 The following python packages must be installed for everything to function.
 
 * pandas - dataframe functionality
-* numpy - 
+* numpy - mathematical operations and array manipulation
 * matplotlib - for some plotting and colormaps
 * scipy - for interpolation and smoothing (Rbf, Delaunay)
 * sklearn - scaling and similarity (StandardScaler, pairwise_distances)
