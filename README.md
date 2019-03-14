@@ -22,11 +22,11 @@ You can choose any combination of up to three of the following features:
 
 Once you select your features, click the 'Draw!' button and a new set of neighborhoods will be loaded.
 
-![raw map](/images/web app load.png)
+![raw map](/images/web-app-load.png)
 
 After you have a set of features you would like to explore, you can then begin to interact with the map. Clicking on a particular neighborhood with cause each neighborhood to be colored according to how similar it is to the one you clicked; green is most similar, red is least. A bar chart of the features you selected is also displayed for the selected neighborhood in the sidebar so you see what makes your neighborhoods similar.
 
-![color map](/images/web app clicked.png)
+![color map](/images/web-app-clicked.png)
 
 
 ## How it works
