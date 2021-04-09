@@ -2,7 +2,7 @@
 
 hoodieSF was created on the premise that neighborhood boundaries in a city are fluid and can vary based on what factors you care about. Are they defined by the demographics of the people living there, or is it the types of shops and restaurants? How much does cost of living matter? What about crime, or population density? Using a variety of location-specific data, hoodieSF lets you compare and contrast different areas in the city of San Francisco based on what features matter to you.
 
-You can can use the live project at [http://hoodiesf.com](http://hoodiesf.com)
+You can can use the live project at [https://crupley.github.io/hoodie/](https://crupley.github.io/hoodie/)
 
 ## What it does
 
